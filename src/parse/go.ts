@@ -1,7 +1,7 @@
 import fs from "fs"
 import readline from "readline"
 
-import Decimal from "decimal.js-light"
+import { default as Decimal } from "decimal.js-light"
 import { Annotation, Parse, ParseResult } from "../parse"
 import path from "path"
 
