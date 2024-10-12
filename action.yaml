@@ -12,7 +12,7 @@ inputs:
   file:
     description: location of json file
     required: true
-  coverbot_api_key:
+  devhub_api_key:
     description: Coverbot Token
     required: true
   github_token:

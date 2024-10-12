@@ -31475,7 +31475,7 @@ function run() {
             const http = new http_client_1.HttpClient("coverbot-io/coverage-action", [], {
                 headers: {
                     "content-type": "application/json",
-                    "x-api-key": core.getInput("coverbot_api_key"),
+                    "x-api-key": core.getInput("devhub_api_key"),
                 },
             });
             const res = yield http.postJson("https://api.coverbot.io/v1/coverage", payload);

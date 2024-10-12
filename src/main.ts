@@ -43,7 +43,7 @@ async function run(): Promise<void> {
     const http = new HttpClient("coverbot-io/coverage-action", [], {
       headers: {
         "content-type": "application/json",
-        "x-api-key": core.getInput("coverbot_api_key"),
+        "x-api-key": core.getInput("devhub_api_key"),
       },
     })
 

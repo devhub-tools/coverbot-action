@@ -1,6 +1,6 @@
 {
   "name": "coverbot-action",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Action for parsing code coverage for Coverbot.",
   "main": "src/main.ts",
