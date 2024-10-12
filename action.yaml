@@ -1,4 +1,4 @@
-name: Coverbot | Code Coverage
+name: Coverbot | DevHub
 description: Quickly determine code coverage.
 
 branding:
@@ -12,7 +12,10 @@ inputs:
   file:
     description: location of json file
     required: true
-  coverbot_api_key:
+  domain:
+    description: DevHub domain (override for self hosted)
+    default: api.devhub.sh
+  devhub_api_key:
     description: Coverbot Token
     required: true
   github_token:

@@ -18,7 +18,7 @@ jobs:
         with:
           format: elixir
           file: example_coverage_files/excoveralls.json
-          coverbot_api_key: ${{ secrets.COVERBOT_API_KEY }}
+          devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   go:
@@ -30,7 +30,7 @@ jobs:
         with:
           format: go
           file: example_coverage_files/go.out
-          coverbot_api_key: ${{ secrets.COVERBOT_API_KEY }}
+          devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   lcov:
@@ -42,7 +42,7 @@ jobs:
         with:
           format: lcov
           file: example_coverage_files/lcov.info
-          coverbot_api_key: ${{ secrets.COVERBOT_API_KEY }}
+          devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   ruby:
@@ -54,5 +54,5 @@ jobs:
         with:
           format: ruby
           file: example_coverage_files/simplecov.json
-          coverbot_api_key: ${{ secrets.COVERBOT_API_KEY }}
+          devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
