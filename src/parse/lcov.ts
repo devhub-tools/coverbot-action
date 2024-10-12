@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 import fs from "fs"
 import util from "util"
-import Decimal from "decimal.js-light"
+import { default as Decimal } from "decimal.js-light"
 import { Annotation, Parse, ParseResult } from "../parse"
 import lcovParse, { LcovFile } from "lcov-parse"
 import path from "path"

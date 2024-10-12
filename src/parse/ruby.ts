@@ -1,6 +1,6 @@
 import fs from "fs"
 
-import Decimal from "decimal.js-light"
+import { default as Decimal } from "decimal.js-light"
 import path from "path"
 import { ChangedFiles } from "../changed-files"
 import { Annotation, Parse, ParseResult } from "../parse"
