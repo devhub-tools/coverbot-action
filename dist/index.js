@@ -31455,6 +31455,7 @@ function run() {
             const token = core.getInput("github_token");
             const format = core.getInput("format");
             const file = core.getInput("file");
+            const domain = core.getInput("domain");
             const subdirectory = core.getInput("subdirectory") || "";
             const octokit = github.getOctokit(token);
             // changedFiles only currently supported for PRs
@@ -31472,13 +31473,13 @@ function run() {
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
                 context: github.context,
             };
-            const http = new http_client_1.HttpClient("coverbot-io/coverage-action", [], {
+            const http = new http_client_1.HttpClient("devhub-tools/coverage-action", [], {
                 headers: {
                     "content-type": "application/json",
                     "x-api-key": core.getInput("devhub_api_key"),
                 },
             });
-            const res = yield http.postJson("https://api.coverbot.io/v1/coverage", payload);
+            const res = yield http.postJson(`https://${domain}/coverbot/v1/coverage`, payload);
             if (!res.result)
                 return core.setFailed("Failed to report coverage");
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.state, context: "coverbot", description: res.result.message }));

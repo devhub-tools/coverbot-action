@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     const token = core.getInput("github_token")
     const format = core.getInput("format")
     const file = core.getInput("file")
+    const domain = core.getInput("domain")
     const subdirectory = core.getInput("subdirectory") || ""
 
     const octokit = github.getOctokit(token)
@@ -40,14 +41,14 @@ async function run(): Promise<void> {
       context: github.context,
     }
 
-    const http = new HttpClient("coverbot-io/coverage-action", [], {
+    const http = new HttpClient("devhub-tools/coverage-action", [], {
       headers: {
         "content-type": "application/json",
         "x-api-key": core.getInput("devhub_api_key"),
       },
     })
 
-    const res: TypedResponse<CoverageResponse> = await http.postJson("https://api.coverbot.io/v1/coverage", payload)
+    const res: TypedResponse<CoverageResponse> = await http.postJson(`https://${domain}/coverbot/v1/coverage`, payload)
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
