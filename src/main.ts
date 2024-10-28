@@ -45,10 +45,10 @@ async function run(): Promise<void> {
           pull_request: {
             head: {
               sha: github.context.payload.pull_request?.head.sha,
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     }
 
     const http = new HttpClient("devhub-tools/coverage-action")

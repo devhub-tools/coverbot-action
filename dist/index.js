@@ -32197,10 +32197,10 @@ function run() {
                         pull_request: {
                             head: {
                                 sha: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.head.sha,
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             };
             const http = new http_client_1.HttpClient("devhub-tools/coverage-action");
             const res = yield http.postJson(`https://${domain}/coverbot/v1/coverage`, payload, { "x-api-key": core.getInput("devhub_api_key") });
