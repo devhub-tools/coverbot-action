@@ -38,17 +38,26 @@ async function run(): Promise<void> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       default_branch: github.context.payload.repository?.default_branch,
-      context: github.context,
+      context: {
+        ref: github.context.ref,
+        sha: github.context.sha,
+        payload: {
+          pull_request: {
+            head: {
+              sha: github.context.payload.pull_request?.head.sha,
+            }
+          }
+        }
+      }
     }
 
-    const http = new HttpClient("devhub-tools/coverage-action", [], {
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": core.getInput("devhub_api_key"),
-      },
-    })
+    const http = new HttpClient("devhub-tools/coverage-action")
 
-    const res: TypedResponse<CoverageResponse> = await http.postJson(`https://${domain}/coverbot/v1/coverage`, payload)
+    const res: TypedResponse<CoverageResponse> = await http.postJson(
+      `https://${domain}/coverbot/v1/coverage`,
+      payload,
+      { "x-api-key": core.getInput("devhub_api_key") }
+    )
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
