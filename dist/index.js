@@ -32169,7 +32169,7 @@ const changed_files_1 = __nccwpck_require__(5901);
 const parse_1 = __nccwpck_require__(2828);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
+        var _a, _b;
         try {
             const token = core.getInput("github_token");
             const format = core.getInput("format");
@@ -32190,15 +32190,20 @@ function run() {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
-                context: github.context,
-            };
-            const http = new http_client_1.HttpClient("devhub-tools/coverage-action", [], {
-                headers: {
-                    "content-type": "application/json",
-                    "x-api-key": core.getInput("devhub_api_key"),
+                context: {
+                    ref: github.context.ref,
+                    sha: github.context.sha,
+                    payload: {
+                        pull_request: {
+                            head: {
+                                sha: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.head.sha,
+                            },
+                        },
+                    },
                 },
-            });
-            const res = yield http.postJson(`https://${domain}/coverbot/v1/coverage`, payload);
+            };
+            const http = new http_client_1.HttpClient("devhub-tools/coverage-action");
+            const res = yield http.postJson(`https://${domain}/coverbot/v1/coverage`, payload, { "x-api-key": core.getInput("devhub_api_key") });
             if (!res.result)
                 return core.setFailed("Failed to report coverage");
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.state, context: "coverbot", description: res.result.message }));
