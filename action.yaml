@@ -14,7 +14,7 @@ inputs:
     required: true
   domain:
     description: DevHub domain (override for self hosted)
-    default: api.devhub.sh
+    default: api.devhub.tools
   devhub_api_key:
     description: Coverbot Token
     required: true

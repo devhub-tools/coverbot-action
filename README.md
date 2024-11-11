@@ -1,6 +1,6 @@
 # Coverbot
 
-Fast tool to track code coverage, get your API key at https://devhub.sh
+Fast tool to track code coverage, get your API key at https://devhub.tools
 
 ## Usage
 

@@ -23,7 +23,7 @@ test("go", async () => {
     "go",
     "./example_coverage_files/go.out",
     {
-      "terraform-provider-querydesk/internal/provider/provider.go": [],
+      "terraform-provider-devhub/internal/provider/provider.go": [],
     },
     ""
   )
