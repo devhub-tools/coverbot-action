@@ -7,6 +7,7 @@ export type ParseResult = {
   relevant: number
   relevantForPatch: number
   annotations: Annotation[]
+  files: Record<string, (number | null)[]>
 }
 
 export type Annotation = {

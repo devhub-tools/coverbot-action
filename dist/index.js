@@ -32319,13 +32319,14 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
     const data = fs_1.default.readFileSync(coverageFile, "utf8");
     const decodedData = JSON.parse(data);
     const parseResult = decodedData.source_files.reduce((acc, file) => {
-        const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseSourceFile(file, changedFiles, subdirectory);
+        const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseSourceFile(file, changedFiles, subdirectory);
         return {
             covered: covered + acc.covered,
             coveredForPatch: coveredForPatch + acc.coveredForPatch,
             relevant: relevant + acc.relevant,
             relevantForPatch: relevantForPatch + acc.relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), files),
         };
     }, {
         covered: 0,
@@ -32333,8 +32334,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32347,16 +32349,17 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files
     };
 });
 exports.parse = parse;
 const parseSourceFile = (sourceFile, changedFiles, subdirectory) => {
+    const fileName = path_1.default.join(subdirectory, sourceFile.name);
     const sourceLines = sourceFile.source.split("\n").map((code, i) => {
         return { code, coverage: sourceFile.coverage[i], lineNumber: i + 1 };
     });
     const relevant = sourceLines.filter(l => l.coverage !== null);
     const relevantForPatch = relevant.filter(line => {
-        const fileName = path_1.default.join(subdirectory, sourceFile.name);
         const changedLines = changedFiles[fileName];
         return fileName in changedFiles && changedLines.includes(`+${line.code}`);
     });
@@ -32373,12 +32376,19 @@ const parseSourceFile = (sourceFile, changedFiles, subdirectory) => {
             message: "Line is not covered by tests.",
         };
     });
+    const coveredLines = sourceFile.coverage.reduce((acc, line, index) => {
+        if (line !== null) {
+            acc.push(index + 1);
+        }
+        return acc;
+    }, []);
     return {
         covered: covered.length,
         coveredForPatch: coveredForPatch.length,
         relevant: relevant.length,
         relevantForPatch: relevantForPatch.length,
         annotations,
+        files: { [fileName]: coveredLines }
     };
 };
 
@@ -32470,6 +32480,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
             coveredForPatch: coveredForPatch + acc.coveredForPatch,
             relevantForPatch: relevantForPatch + acc.relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), { [sourceFile]: [] }),
         };
     }, {
         covered: 0,
@@ -32477,8 +32488,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         coveredForPatch: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, relevant, coveredForPatch, relevantForPatch, annotations } = parseResult;
+    const { covered, relevant, coveredForPatch, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32491,6 +32503,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevantForPatch,
         patchPercentage,
         annotations,
+        files
     };
 });
 exports.parse = parse;
@@ -32582,8 +32595,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {}
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32596,6 +32610,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files
     };
 });
 exports.parse = parse;
@@ -32643,8 +32658,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {}
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32657,6 +32673,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files
     };
 });
 exports.parse = parse;
@@ -32686,6 +32703,7 @@ const parseSourceFile = ([sourceFile, value], changedFiles, subdirectory) => {
         relevant: relevant.length,
         relevantForPatch: relevantForPatch.length,
         annotations,
+        files: {}
     };
 };
 
