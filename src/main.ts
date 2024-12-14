@@ -38,6 +38,7 @@ async function run(): Promise<void> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       default_branch: github.context.payload.repository?.default_branch,
+      changedFiles: changedFiles,
       context: {
         ref: github.context.ref,
         sha: github.context.sha,

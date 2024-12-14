@@ -32190,6 +32190,7 @@ function run() {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
+                changedFiles: changedFiles,
                 context: {
                     ref: github.context.ref,
                     sha: github.context.sha,
