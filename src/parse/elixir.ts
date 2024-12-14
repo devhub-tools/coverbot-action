@@ -63,7 +63,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
     percentage,
     patchPercentage,
     annotations,
-    files
+    files,
   }
 }
 
@@ -95,12 +95,15 @@ const parseSourceFile = (sourceFile: SourceFile, changedFiles: ChangedFiles, sub
       } as Annotation
     })
 
-  const coveredLines = sourceFile.coverage.reduce((acc, line, index) => {
-    if (line !== null) {
-      return { ...acc, [index + 1]: line > 0 }
-    }
-    return acc
-  }, {} as Record<number, boolean>)
+  const coveredLines = sourceFile.coverage.reduce(
+    (acc, line, index) => {
+      if (line !== null) {
+        return { ...acc, [index + 1]: line > 0 }
+      }
+      return acc
+    },
+    {} as Record<number, boolean>
+  )
 
   return {
     covered: covered.length,
@@ -108,6 +111,6 @@ const parseSourceFile = (sourceFile: SourceFile, changedFiles: ChangedFiles, sub
     relevant: relevant.length,
     relevantForPatch: relevantForPatch.length,
     annotations,
-    files: { [fileName]: coveredLines }
+    files: { [fileName]: coveredLines },
   }
 }

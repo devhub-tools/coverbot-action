@@ -42,14 +42,14 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
       const annotations =
         fileName in changedFiles && line.covered === 0
           ? [
-            {
-              path: path.join(subdirectory, sourceFile),
-              start_line: parseInt(start),
-              end_line: parseInt(end),
-              annotation_level: "warning",
-              message: "Line is not covered by tests.",
-            } as Annotation,
-          ]
+              {
+                path: path.join(subdirectory, sourceFile),
+                start_line: parseInt(start),
+                end_line: parseInt(end),
+                annotation_level: "warning",
+                message: "Line is not covered by tests.",
+              } as Annotation,
+            ]
           : []
 
       return {
@@ -58,7 +58,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
         coveredForPatch: coveredForPatch + acc.coveredForPatch,
         relevantForPatch: relevantForPatch + acc.relevantForPatch,
         annotations: annotations.concat(acc.annotations),
-        files: { ...acc.files, [sourceFile]: [] },
+        files: { ...acc.files, [sourceFile]: { ...acc.files[sourceFile], [lineRef]: covered > 0 } },
       } as ParseResult
     },
     {
@@ -87,6 +87,6 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
     relevantForPatch,
     patchPercentage,
     annotations,
-    files
+    files,
   }
 }
