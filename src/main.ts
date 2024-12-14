@@ -24,7 +24,7 @@ async function run(): Promise<void> {
     // changedFiles only currently supported for PRs
     const changedFiles = github.context.eventName === "pull_request" ? await getChangedFiles(octokit) : {}
 
-    const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations } =
+    const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations, files } =
       await parse(format, file, changedFiles, subdirectory)
 
     core.setOutput("covered", covered)
@@ -38,7 +38,7 @@ async function run(): Promise<void> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       default_branch: github.context.payload.repository?.default_branch,
-      changedFiles: changedFiles,
+      files: files,
       context: {
         ref: github.context.ref,
         sha: github.context.sha,

@@ -32179,7 +32179,7 @@ function run() {
             const octokit = github.getOctokit(token);
             // changedFiles only currently supported for PRs
             const changedFiles = github.context.eventName === "pull_request" ? yield (0, changed_files_1.getChangedFiles)(octokit) : {};
-            const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations } = yield (0, parse_1.parse)(format, file, changedFiles, subdirectory);
+            const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations, files } = yield (0, parse_1.parse)(format, file, changedFiles, subdirectory);
             core.setOutput("covered", covered);
             core.setOutput("relevant", relevant);
             core.setOutput("percentage", percentage);
@@ -32190,7 +32190,7 @@ function run() {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
-                changedFiles: changedFiles,
+                files: files,
                 context: {
                     ref: github.context.ref,
                     sha: github.context.sha,
