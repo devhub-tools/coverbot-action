@@ -41,11 +41,11 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
             : []
 
         const coveredLines = file.lines.details.reduce(
-          (acc, line) => {
+          (lineAcc, line) => {
             if (line !== null) {
-              return { ...acc, [line.line + 1]: line.hit > 0 }
+              return { ...lineAcc, [line.line + 1]: line.hit > 0 }
             }
-            return acc
+            return lineAcc
           },
           {} as Record<number, boolean>
         )
