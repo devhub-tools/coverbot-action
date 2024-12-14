@@ -97,10 +97,10 @@ const parseSourceFile = (sourceFile: SourceFile, changedFiles: ChangedFiles, sub
 
   const coveredLines = sourceFile.coverage.reduce((acc, line, index) => {
     if (line !== null) {
-      acc.push(index + 1)
+      acc.push({ [index + 1]: line > 0 })
     }
     return acc
-  }, [] as number[])
+  }, [] as Record<number, boolean>[])
 
   return {
     covered: covered.length,

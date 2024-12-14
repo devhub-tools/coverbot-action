@@ -32378,7 +32378,7 @@ const parseSourceFile = (sourceFile, changedFiles, subdirectory) => {
     });
     const coveredLines = sourceFile.coverage.reduce((acc, line, index) => {
         if (line !== null) {
-            acc.push(index + 1);
+            acc.push({ [index + 1]: line > 0 });
         }
         return acc;
     }, []);
