@@ -40,12 +40,23 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
                 )
             : []
 
+        const coveredLines = file.lines.details.reduce(
+          (lineAcc, line) => {
+            if (line !== null) {
+              return { ...lineAcc, [line.line + 1]: line.hit > 0 }
+            }
+            return lineAcc
+          },
+          {} as Record<number, boolean>
+        )
+
         return {
           covered: file.lines.hit + acc.covered,
           relevant: file.lines.found + acc.relevant,
           coveredForPatch,
           relevantForPatch,
           annotations: annotations.concat(acc.annotations),
+          files: { ...acc.files, [fileName]: coveredLines },
         } as ParseResult
       },
       {
@@ -54,10 +65,11 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
       } as ParseResult
     )
 
-  const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult
+  const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult
 
   const percentage = new Decimal(covered).dividedBy(new Decimal(relevant)).times(100).toFixed(2)
   const patchPercentage =
@@ -73,5 +85,6 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
     percentage,
     patchPercentage,
     annotations,
+    files,
   }
 }

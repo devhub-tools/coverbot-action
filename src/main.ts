@@ -6,6 +6,7 @@ import { TypedResponse } from "@actions/http-client/lib/interfaces"
 import { parse } from "./parse"
 
 type CoverageResponse = {
+  id: string
   sha: string
   state: "failure" | "success"
   message: string
@@ -24,7 +25,7 @@ async function run(): Promise<void> {
     // changedFiles only currently supported for PRs
     const changedFiles = github.context.eventName === "pull_request" ? await getChangedFiles(octokit) : {}
 
-    const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations } =
+    const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations, files } =
       await parse(format, file, changedFiles, subdirectory)
 
     core.setOutput("covered", covered)
@@ -38,6 +39,7 @@ async function run(): Promise<void> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       default_branch: github.context.payload.repository?.default_branch,
+      files: files,
       context: {
         ref: github.context.ref,
         sha: github.context.sha,
@@ -108,6 +110,7 @@ async function run(): Promise<void> {
           state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure",
           context: "coverbot (patch)",
           description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`,
+          target_url: `https://${domain}/coverbot/coverage/${res.result.id}`,
         })
       }
     }

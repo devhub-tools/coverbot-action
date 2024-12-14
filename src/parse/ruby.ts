@@ -20,7 +20,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
 
   const parseResult: ParseResult = Object.entries(decodedData.coverage).reduce(
     (acc, file) => {
-      const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseSourceFile(
+      const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseSourceFile(
         file,
         changedFiles,
         subdirectory
@@ -32,6 +32,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
         relevant: relevant + acc.relevant,
         relevantForPatch: relevantForPatch + acc.relevantForPatch,
         annotations: annotations.concat(acc.annotations),
+        files: { ...acc.files, ...files },
       } as ParseResult
     },
     {
@@ -40,10 +41,11 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
       relevant: 0,
       relevantForPatch: 0,
       annotations: [],
+      files: {},
     } as ParseResult
   )
 
-  const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult
+  const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult
 
   const percentage = new Decimal(covered).dividedBy(new Decimal(relevant)).times(100).toFixed(2)
   const patchPercentage =
@@ -59,6 +61,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
     percentage,
     patchPercentage,
     annotations,
+    files,
   }
 }
 
@@ -91,11 +94,22 @@ const parseSourceFile = (
       } as Annotation
     })
 
+  const coveredLines = relevant.reduce(
+    (acc, line) => {
+      if (line !== null) {
+        return { ...acc, [line.lineNumber]: line.coverage !== null && line.coverage > 0 }
+      }
+      return acc
+    },
+    {} as Record<number, boolean>
+  )
+
   return {
     covered: covered.length,
     coveredForPatch: coveredForPatch.length,
     relevant: relevant.length,
     relevantForPatch: relevantForPatch.length,
     annotations,
+    files: { [fileName]: coveredLines },
   }
 }

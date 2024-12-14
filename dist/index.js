@@ -32082,13 +32082,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32145,13 +32155,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32179,7 +32199,7 @@ function run() {
             const octokit = github.getOctokit(token);
             // changedFiles only currently supported for PRs
             const changedFiles = github.context.eventName === "pull_request" ? yield (0, changed_files_1.getChangedFiles)(octokit) : {};
-            const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations } = yield (0, parse_1.parse)(format, file, changedFiles, subdirectory);
+            const { covered, coveredForPatch, relevant, relevantForPatch, percentage, patchPercentage, annotations, files } = yield (0, parse_1.parse)(format, file, changedFiles, subdirectory);
             core.setOutput("covered", covered);
             core.setOutput("relevant", relevant);
             core.setOutput("percentage", percentage);
@@ -32190,6 +32210,7 @@ function run() {
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
+                files: files,
                 context: {
                     ref: github.context.ref,
                     sha: github.context.sha,
@@ -32220,7 +32241,7 @@ function run() {
                 }
                 octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: checkRun.id, conclusion: res.result.state }));
                 if (relevantForPatch && relevantForPatch > 0) {
-                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)` }));
+                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`, target_url: `https://${domain}/coverbot/coverage/${res.result.id}` }));
                 }
             }
         }
@@ -32256,13 +32277,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parse = void 0;
 const core = __importStar(__nccwpck_require__(7484));
@@ -32318,13 +32349,14 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
     const data = fs_1.default.readFileSync(coverageFile, "utf8");
     const decodedData = JSON.parse(data);
     const parseResult = decodedData.source_files.reduce((acc, file) => {
-        const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseSourceFile(file, changedFiles, subdirectory);
+        const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseSourceFile(file, changedFiles, subdirectory);
         return {
             covered: covered + acc.covered,
             coveredForPatch: coveredForPatch + acc.coveredForPatch,
             relevant: relevant + acc.relevant,
             relevantForPatch: relevantForPatch + acc.relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), files),
         };
     }, {
         covered: 0,
@@ -32332,8 +32364,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32346,16 +32379,17 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files,
     };
 });
 exports.parse = parse;
 const parseSourceFile = (sourceFile, changedFiles, subdirectory) => {
+    const fileName = path_1.default.join(subdirectory, sourceFile.name);
     const sourceLines = sourceFile.source.split("\n").map((code, i) => {
         return { code, coverage: sourceFile.coverage[i], lineNumber: i + 1 };
     });
     const relevant = sourceLines.filter(l => l.coverage !== null);
     const relevantForPatch = relevant.filter(line => {
-        const fileName = path_1.default.join(subdirectory, sourceFile.name);
         const changedLines = changedFiles[fileName];
         return fileName in changedFiles && changedLines.includes(`+${line.code}`);
     });
@@ -32372,12 +32406,19 @@ const parseSourceFile = (sourceFile, changedFiles, subdirectory) => {
             message: "Line is not covered by tests.",
         };
     });
+    const coveredLines = sourceFile.coverage.reduce((acc, line, index) => {
+        if (line !== null) {
+            return Object.assign(Object.assign({}, acc), { [index + 1]: line > 0 });
+        }
+        return acc;
+    }, {});
     return {
         covered: covered.length,
         coveredForPatch: coveredForPatch.length,
         relevant: relevant.length,
         relevantForPatch: relevantForPatch.length,
         annotations,
+        files: { [fileName]: coveredLines },
     };
 };
 
@@ -32469,6 +32510,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
             coveredForPatch: coveredForPatch + acc.coveredForPatch,
             relevantForPatch: relevantForPatch + acc.relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), { [sourceFile]: Object.assign(Object.assign({}, acc.files[sourceFile]), { [lineRef]: covered > 0 }) }),
         };
     }, {
         covered: 0,
@@ -32476,8 +32518,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         coveredForPatch: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, relevant, coveredForPatch, relevantForPatch, annotations } = parseResult;
+    const { covered, relevant, coveredForPatch, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32490,6 +32533,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevantForPatch,
         patchPercentage,
         annotations,
+        files,
     };
 });
 exports.parse = parse;
@@ -32518,13 +32562,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32568,12 +32622,19 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
                 message: "Line is not covered by tests.",
             }))
             : [];
+        const coveredLines = file.lines.details.reduce((lineAcc, line) => {
+            if (line !== null) {
+                return Object.assign(Object.assign({}, lineAcc), { [line.line + 1]: line.hit > 0 });
+            }
+            return lineAcc;
+        }, {});
         return {
             covered: file.lines.hit + acc.covered,
             relevant: file.lines.found + acc.relevant,
             coveredForPatch,
             relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), { [fileName]: coveredLines }),
         };
     }, {
         covered: 0,
@@ -32581,8 +32642,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32595,6 +32657,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files,
     };
 });
 exports.parse = parse;
@@ -32628,13 +32691,14 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
     const data = fs_1.default.readFileSync(coverageFile, "utf8");
     const decodedData = JSON.parse(data);
     const parseResult = Object.entries(decodedData.coverage).reduce((acc, file) => {
-        const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseSourceFile(file, changedFiles, subdirectory);
+        const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseSourceFile(file, changedFiles, subdirectory);
         return {
             covered: covered + acc.covered,
             coveredForPatch: coveredForPatch + acc.coveredForPatch,
             relevant: relevant + acc.relevant,
             relevantForPatch: relevantForPatch + acc.relevantForPatch,
             annotations: annotations.concat(acc.annotations),
+            files: Object.assign(Object.assign({}, acc.files), files),
         };
     }, {
         covered: 0,
@@ -32642,8 +32706,9 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         relevant: 0,
         relevantForPatch: 0,
         annotations: [],
+        files: {},
     });
-    const { covered, coveredForPatch, relevant, relevantForPatch, annotations } = parseResult;
+    const { covered, coveredForPatch, relevant, relevantForPatch, annotations, files } = parseResult;
     const percentage = new decimal_js_light_1.default(covered).dividedBy(new decimal_js_light_1.default(relevant)).times(100).toFixed(2);
     const patchPercentage = relevantForPatch > 0
         ? new decimal_js_light_1.default(coveredForPatch).dividedBy(new decimal_js_light_1.default(relevantForPatch)).times(100).toFixed(2)
@@ -32656,6 +32721,7 @@ const parse = (coverageFile, changedFiles, subdirectory) => __awaiter(void 0, vo
         percentage,
         patchPercentage,
         annotations,
+        files,
     };
 });
 exports.parse = parse;
@@ -32679,12 +32745,19 @@ const parseSourceFile = ([sourceFile, value], changedFiles, subdirectory) => {
             message: "Line is not covered by tests.",
         };
     });
+    const coveredLines = relevant.reduce((acc, line) => {
+        if (line !== null) {
+            return Object.assign(Object.assign({}, acc), { [line.lineNumber]: line.coverage !== null && line.coverage > 0 });
+        }
+        return acc;
+    }, {});
     return {
         covered: covered.length,
         coveredForPatch: coveredForPatch.length,
         relevant: relevant.length,
         relevantForPatch: relevantForPatch.length,
         annotations,
+        files: { [fileName]: coveredLines },
     };
 };
 

@@ -58,6 +58,7 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
         coveredForPatch: coveredForPatch + acc.coveredForPatch,
         relevantForPatch: relevantForPatch + acc.relevantForPatch,
         annotations: annotations.concat(acc.annotations),
+        files: { ...acc.files, [sourceFile]: { ...acc.files[sourceFile], [lineRef]: covered > 0 } },
       } as ParseResult
     },
     {
@@ -66,10 +67,11 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
       coveredForPatch: 0,
       relevantForPatch: 0,
       annotations: [],
+      files: {},
     } as ParseResult
   )
 
-  const { covered, relevant, coveredForPatch, relevantForPatch, annotations } = parseResult
+  const { covered, relevant, coveredForPatch, relevantForPatch, annotations, files } = parseResult
 
   const percentage = new Decimal(covered).dividedBy(new Decimal(relevant)).times(100).toFixed(2)
   const patchPercentage =
@@ -85,5 +87,6 @@ export const parse: Parse = async (coverageFile, changedFiles, subdirectory) => 
     relevantForPatch,
     patchPercentage,
     annotations,
+    files,
   }
 }
