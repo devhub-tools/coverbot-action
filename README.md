@@ -41,12 +41,13 @@ jobs:
 
 ## Inputs
 
--   `format`: (Required) file format (currently only `elixir` and `go` are supported).
+-  `domain`: (Required) The domain of your Devhub instance.
+
+-   `format`: (Required) file format (currently only `elixir`, `go`, `lcov`, and `ruby` are supported, reach out to support@devhub.tools for expanded language support).
 
 -   `file`: (Required) A json file containing code coverage results.
 
--   `devhub_api_key`: (Required) You will need to create an API key on
-    https://app.coverbot.io/api-keys and save it as a secret in GitHub
+-   `devhub_api_key`: (Required) You will need to create an API key in the settings of your installed app and save it as a secret in GitHub
     Actions settings.
 
 -   `github_token`: (Required) Access from `${{ secrets.GITHUB_TOKEN }}`
@@ -62,5 +63,5 @@ jobs:
 ## Add the coverage badge to your README.md
 
 ```markdown
-![coverbot](https://api.coverbot.io/OWNER/REPO/DEFAULT_BRANCH/badge.svg)
+![coverbot](https://img.shields.io/endpoint?url=https://${DOMAIN}/coverbot/v1/${OWNER}/${REPO}/${BRANCH}/badge.json)
 ```

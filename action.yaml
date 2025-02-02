@@ -1,4 +1,4 @@
-name: Coverbot | DevHub
+name: Coverbot | Devhub
 description: Quickly determine code coverage.
 
 branding:
@@ -13,16 +13,16 @@ inputs:
     description: location of json file
     required: true
   domain:
-    description: DevHub domain (override for self hosted)
-    default: app.devhub.tools
+    description: Domain where your Devhub app is hosted
+    required: true
   devhub_api_key:
-    description: Coverbot Token
+    description: API key from your Devhub app settings
     required: true
   github_token:
     description: GitHub Token
     required: true
   subdirectory:
-    description: If your app is in a subdirectory, specify it here
+    description: If your code is in a subdirectory, specify it here
     required: false
 outputs:
   covered:
