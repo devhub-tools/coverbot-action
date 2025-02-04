@@ -16,6 +16,7 @@ jobs:
 
       - uses: ./
         with:
+          domain: private.devhub.tools
           format: elixir
           file: example_coverage_files/excoveralls.json
           devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
@@ -28,6 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./
         with:
+          domain: private.devhub.tools
           format: go
           file: example_coverage_files/go.out
           devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
@@ -40,6 +42,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./
         with:
+          domain: private.devhub.tools
           format: lcov
           file: example_coverage_files/lcov.info
           devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
@@ -52,6 +55,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./
         with:
+          domain: private.devhub.tools
           format: ruby
           file: example_coverage_files/simplecov.json
           devhub_api_key: ${{ secrets.DEVHUB_API_KEY }}
