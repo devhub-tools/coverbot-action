@@ -1,16 +1,8 @@
 import * as core from "@actions/core"
 import * as github from "@actions/github"
-import { HttpClient } from "@actions/http-client"
 import { getChangedFiles } from "./changed-files"
-import { TypedResponse } from "@actions/http-client/lib/interfaces"
 import { parse } from "./parse"
-
-type CoverageResponse = {
-  id: string
-  sha: string
-  state: "failure" | "success"
-  message: string
-}
+import { postCoverage } from "./post-coverage"
 
 async function run(): Promise<void> {
   try {
@@ -36,10 +28,10 @@ async function run(): Promise<void> {
       covered,
       relevant,
       percentage,
+      files,
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       default_branch: github.context.payload.repository?.default_branch,
-      files: files,
       context: {
         ref: github.context.ref,
         sha: github.context.sha,
@@ -53,13 +45,7 @@ async function run(): Promise<void> {
       },
     }
 
-    const http = new HttpClient("devhub-tools/coverage-action")
-
-    const res: TypedResponse<CoverageResponse> = await http.postJson(
-      `https://${domain}/coverbot/v1/coverage`,
-      payload,
-      { "x-api-key": core.getInput("devhub_api_key") }
-    )
+    const res = await postCoverage(domain, payload)
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
