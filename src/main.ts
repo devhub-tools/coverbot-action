@@ -53,7 +53,7 @@ async function run(): Promise<void> {
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
-    if (core.getInput("junit_file")) {
+    if (core.getInput("junit_file") != '') {
       const junitRes = await postJUnitReport(domain, repoOwner, repo, res.result.sha)
 
       if (junitRes.status !== 200) return core.setFailed("Failed to report junit")
