@@ -18,9 +18,13 @@ export const postCoverage = async (
   const http = new HttpClient("devhub-tools/coverage-action")
   const retryCodes = [400, 408, 500, 502, 503, 504, 522, 524]
 
-  const res: TypedResponse<CoverageResponse> = await http.postJson(`https://${domain}/coverbot/v1/coverage`, payload, {
-    "x-api-key": core.getInput("devhub_api_key"),
-  })
+  const res: TypedResponse<CoverageResponse> = await http.postJson(
+    `https://${domain}/api/v1/coverbot/coverage`,
+    payload,
+    {
+      "x-api-key": core.getInput("devhub_api_key"),
+    }
+  )
 
   if (res.statusCode === 200) return res
 
