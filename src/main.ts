@@ -53,9 +53,11 @@ async function run(): Promise<void> {
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
-    const junitRes = await postJUnitReport(domain, repoOwner, repo, res.result.sha)
+    if (core.getInput("junit_file")) {
+      const junitRes = await postJUnitReport(domain, repoOwner, repo, res.result.sha)
 
-    if (junitRes.status !== 200) return core.setFailed("Failed to report junit")
+      if (junitRes.status !== 200) return core.setFailed("Failed to report junit")
+    }
 
     octokit.rest.repos.createCommitStatus({
       ...github.context.repo,

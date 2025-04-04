@@ -47,6 +47,8 @@ jobs:
 
 -   `file`: (Required) A json file containing code coverage results.
 
+-   `junit_file`: (Optional) A JUnit XML file containing details about the test run.
+
 -   `devhub_api_key`: (Required) You will need to create an API key in the settings of your installed app and save it as a secret in GitHub
     Actions settings.
 
