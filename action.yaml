@@ -24,6 +24,9 @@ inputs:
   subdirectory:
     description: If your code is in a subdirectory, specify it here
     required: false
+  junit_file:
+    description: location of the junit file
+    required: false
 outputs:
   covered:
     description: Number of lines covered

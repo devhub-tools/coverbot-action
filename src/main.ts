@@ -3,6 +3,7 @@ import * as github from "@actions/github"
 import { getChangedFiles } from "./changed-files"
 import { parse } from "./parse"
 import { postCoverage } from "./post-coverage"
+import { postJUnitReport } from "./post-junit-report"
 
 async function run(): Promise<void> {
   try {
@@ -11,6 +12,9 @@ async function run(): Promise<void> {
     const file = core.getInput("file")
     const domain = core.getInput("domain")
     const subdirectory = core.getInput("subdirectory") || ""
+    const repoOwner = github.context.repo.owner
+    const repo = github.context.repo.repo
+    const sha = github.context.sha
 
     const octokit = github.getOctokit(token)
 
@@ -29,12 +33,12 @@ async function run(): Promise<void> {
       relevant,
       percentage,
       files,
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+      owner: repoOwner,
+      repo,
       default_branch: github.context.payload.repository?.default_branch,
       context: {
         ref: github.context.ref,
-        sha: github.context.sha,
+        sha,
         payload: {
           pull_request: {
             head: {
@@ -48,6 +52,14 @@ async function run(): Promise<void> {
     const res = await postCoverage(domain, payload)
 
     if (!res.result) return core.setFailed("Failed to report coverage")
+
+    if (core.getInput("junit_file")) {
+      core.info("junit_file input found: uploading JUnit file")
+
+      const junitRes = await postJUnitReport(domain, repoOwner, repo, res.result.sha)
+
+      if (junitRes.status !== 200) return core.setFailed("Failed to upload JUnit file")
+    }
 
     octokit.rest.repos.createCommitStatus({
       ...github.context.repo,
