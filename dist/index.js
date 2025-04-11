@@ -36730,9 +36730,12 @@ function run() {
             const res = yield (0, post_coverage_1.postCoverage)(domain, payload);
             if (!res.result)
                 return core.setFailed("Failed to report coverage");
-            const junitRes = yield (0, post_junit_report_1.postJUnitReport)(domain, repoOwner, repo, res.result.sha);
-            if (junitRes.status !== 200)
-                return core.setFailed("Failed to report junit");
+            if (core.getInput("junit_file")) {
+                core.info("junit_file input found: uploading JUnit file");
+                const junitRes = yield (0, post_junit_report_1.postJUnitReport)(domain, repoOwner, repo, res.result.sha);
+                if (junitRes.status !== 200)
+                    return core.setFailed("Failed to upload JUnit file");
+            }
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.state, context: "coverbot", description: res.result.message }));
             if (annotations.length > 0 || (relevantForPatch && relevantForPatch > 0)) {
                 const { data: checkRun } = yield octokit.rest.checks.create(Object.assign(Object.assign({}, github.context.repo), { status: "in_progress", name: "coverbot", head_sha: res.result.sha }));
