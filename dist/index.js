@@ -37406,21 +37406,23 @@ const postJUnitReports = (domain, repoOwner, repo, sha) => __awaiter(void 0, voi
         "x-api-key": core.getInput("devhub_api_key"),
         "content-type": "multipart/form-data",
     };
+    let uploadedFilesNumber = 0;
     if (files.length === 0) {
-        core.info(`No files found in folder: ${folderPath}`);
+        core.info(`No files found in folder ${folderPath}`);
         return;
     }
     for (const file of files) {
         const filePath = path_1.default.join(folderPath, file);
         const stats = fs_1.default.statSync(filePath);
-        if (stats.isFile()) {
-            core.info(`Uploading file: ${file}`);
+        if (stats.isFile() && path_1.default.extname(file) === ".xml") {
+            core.info(`Uploading file ${file}`);
             try {
                 const res = axios_1.default.post(`https://${domain}/api/v1/coverbot/junit/${repoOwner}/${repo}/${sha}`, {
                     junit_xml: fs_1.default.createReadStream(filePath),
                 }, {
                     headers,
                 });
+                uploadedFilesNumber++;
                 core.info(`File ${file} uploaded successfully`);
             }
             catch (error) {
@@ -37428,7 +37430,7 @@ const postJUnitReports = (domain, repoOwner, repo, sha) => __awaiter(void 0, voi
             }
         }
     }
-    core.info("Uploaded all JUnit files in the directory");
+    core.info(`Uploaded ${uploadedFilesNumber} JUnit files`);
 });
 exports.postJUnitReports = postJUnitReports;
 

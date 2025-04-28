@@ -11,8 +11,10 @@ export const postJUnitReports = async (domain: String, repoOwner: String, repo: 
     "content-type": "multipart/form-data",
   }
 
+  let uploadedFilesNumber = 0
+
   if (files.length === 0) {
-    core.info(`No files found in folder: ${folderPath}`)
+    core.info(`No files found in folder ${folderPath}`)
     return
   }
 
@@ -20,8 +22,8 @@ export const postJUnitReports = async (domain: String, repoOwner: String, repo: 
     const filePath = path.join(folderPath, file)
     const stats = fs.statSync(filePath)
 
-    if (stats.isFile()) {
-      core.info(`Uploading file: ${file}`)
+    if (stats.isFile() && path.extname(file) === ".xml") {
+      core.info(`Uploading file ${file}`)
 
       try {
         const res = axios.post(
@@ -34,6 +36,8 @@ export const postJUnitReports = async (domain: String, repoOwner: String, repo: 
           }
         )
 
+        uploadedFilesNumber++
+
         core.info(`File ${file} uploaded successfully`)
       } catch (error) {
         core.error(`Error uploading file ${file}`)
@@ -41,5 +45,5 @@ export const postJUnitReports = async (domain: String, repoOwner: String, repo: 
     }
   }
 
-  core.info("Uploaded all JUnit files in the directory")
+  core.info(`Uploaded ${uploadedFilesNumber} JUnit files`)
 }
