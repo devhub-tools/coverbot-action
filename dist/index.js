@@ -36687,7 +36687,7 @@ const github = __importStar(__nccwpck_require__(3228));
 const changed_files_1 = __nccwpck_require__(5901);
 const parse_1 = __nccwpck_require__(2828);
 const post_coverage_1 = __nccwpck_require__(9092);
-const post_junit_report_1 = __nccwpck_require__(1127);
+const post_junit_reports_1 = __nccwpck_require__(2622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b;
@@ -36730,11 +36730,9 @@ function run() {
             const res = yield (0, post_coverage_1.postCoverage)(domain, payload);
             if (!res.result)
                 return core.setFailed("Failed to report coverage");
-            if (core.getInput("junit_file")) {
-                core.info("junit_file input found: uploading JUnit file");
-                const junitRes = yield (0, post_junit_report_1.postJUnitReport)(domain, repoOwner, repo, res.result.sha);
-                if (junitRes.status !== 200)
-                    return core.setFailed("Failed to upload JUnit file");
+            if (core.getInput("junit_folder")) {
+                core.info("junit_folder input found: uploading JUnit files");
+                yield (0, post_junit_reports_1.postJUnitReports)(domain, repoOwner, repo, res.result.sha);
             }
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.state, context: "coverbot", description: res.result.message }));
             if (annotations.length > 0 || (relevantForPatch && relevantForPatch > 0)) {
@@ -37345,7 +37343,7 @@ exports.postCoverage = postCoverage;
 
 /***/ }),
 
-/***/ 1127:
+/***/ 2622:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -37396,24 +37394,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.postJUnitReport = void 0;
+exports.postJUnitReports = void 0;
 const core = __importStar(__nccwpck_require__(7484));
 const axios_1 = __importDefault(__nccwpck_require__(7269));
 const fs_1 = __importDefault(__nccwpck_require__(9896));
-const postJUnitReport = (domain, repoOwner, repo, sha) => __awaiter(void 0, void 0, void 0, function* () {
-    const filePath = core.getInput("junit_file");
+const path_1 = __importDefault(__nccwpck_require__(6928));
+const postJUnitReports = (domain, repoOwner, repo, sha) => __awaiter(void 0, void 0, void 0, function* () {
+    const folderPath = core.getInput("junit_folder");
+    const files = fs_1.default.readdirSync(folderPath);
     const headers = {
         "x-api-key": core.getInput("devhub_api_key"),
         "content-type": "multipart/form-data",
     };
-    const res = yield axios_1.default.post(`https://${domain}/api/v1/coverbot/junit/${repoOwner}/${repo}/${sha}`, {
-        junit_xml: fs_1.default.createReadStream(filePath),
-    }, {
-        headers,
-    });
-    return res;
+    if (files.length === 0) {
+        core.info(`No files found in folder: ${folderPath}`);
+        return;
+    }
+    for (const file of files) {
+        const filePath = path_1.default.join(folderPath, file);
+        const stats = fs_1.default.statSync(filePath);
+        if (stats.isFile()) {
+            core.info(`Uploading file: ${file}`);
+            try {
+                const res = axios_1.default.post(`https://${domain}/api/v1/coverbot/junit/${repoOwner}/${repo}/${sha}`, {
+                    junit_xml: fs_1.default.createReadStream(filePath),
+                }, {
+                    headers,
+                });
+                core.info(`File ${file} uploaded successfully`);
+            }
+            catch (error) {
+                core.error(`Error uploading file ${file}`);
+            }
+        }
+    }
+    core.info("Uploaded all JUnit files in the directory");
 });
-exports.postJUnitReport = postJUnitReport;
+exports.postJUnitReports = postJUnitReports;
 
 
 /***/ }),
