@@ -3,7 +3,7 @@ import * as github from "@actions/github"
 import { getChangedFiles } from "./changed-files"
 import { parse } from "./parse"
 import { postCoverage } from "./post-coverage"
-import { postJUnitReport } from "./post-junit-report"
+import { postJUnitReports } from "./post-junit-reports"
 
 async function run(): Promise<void> {
   try {
@@ -53,12 +53,9 @@ async function run(): Promise<void> {
 
     if (!res.result) return core.setFailed("Failed to report coverage")
 
-    if (core.getInput("junit_file")) {
-      core.info("junit_file input found: uploading JUnit file")
-
-      const junitRes = await postJUnitReport(domain, repoOwner, repo, res.result.sha)
-
-      if (junitRes.status !== 200) return core.setFailed("Failed to upload JUnit file")
+    if (core.getInput("junit_folder")) {
+      core.info("junit_folder input found: uploading JUnit files")
+      await postJUnitReports(domain, repoOwner, repo, res.result.sha)
     }
 
     octokit.rest.repos.createCommitStatus({

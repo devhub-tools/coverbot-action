@@ -24,8 +24,8 @@ inputs:
   subdirectory:
     description: If your code is in a subdirectory, specify it here
     required: false
-  junit_file:
-    description: location of the junit file
+  junit_folder:
+    description: location of the folder containing the JUnit files
     required: false
 outputs:
   covered:
