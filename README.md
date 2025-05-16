@@ -35,6 +35,7 @@ jobs:
       with:
         format: elixir
         file: cover/excoveralls.json
+        junit_folder: junit
         devhub_api_key: ${{ secrets.DEVHUB_API_KEY}}
         github_token: ${{ secrets.GITHUB_TOKEN}}
 ```
@@ -47,7 +48,7 @@ jobs:
 
 -   `file`: (Required) A json file containing code coverage results.
 
--   `junit_file`: (Optional) A JUnit XML file containing details about the test run.
+-   `junit_folder`: (Optional) A folder containing JUnit XML files.
 
 -   `devhub_api_key`: (Required) You will need to create an API key in the settings of your installed app and save it as a secret in GitHub
     Actions settings.
