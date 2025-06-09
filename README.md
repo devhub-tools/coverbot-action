@@ -48,7 +48,7 @@ jobs:
 
 -   `file`: (Required) A json file containing code coverage results.
 
--   `junit_folder`: (Optional) A folder containing JUnit XML files. Make sure the name of each file reflects the name of the test suite, so different test suite runs can be grouped under the same test suite.
+-   `junit_folder`: (Optional) A folder containing JUnit XML files. Make sure the name of each file reflects the name of the test suite. In this way, different test suite runs can be grouped under the same test suite.
 
 -   `devhub_api_key`: (Required) You will need to create an API key in the settings of your installed app and save it as a secret in GitHub
     Actions settings.
