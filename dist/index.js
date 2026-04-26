@@ -36712,6 +36712,7 @@ function run() {
                 relevant,
                 percentage,
                 files,
+                subdirectory: subdirectory || null,
                 owner: repoOwner,
                 repo,
                 default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,

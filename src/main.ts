@@ -33,6 +33,7 @@ async function run(): Promise<void> {
       relevant,
       percentage,
       files,
+      subdirectory: subdirectory || null,
       owner: repoOwner,
       repo,
       default_branch: github.context.payload.repository?.default_branch,
