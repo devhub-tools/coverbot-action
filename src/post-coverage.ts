@@ -4,6 +4,7 @@ import { TypedResponse } from "@actions/http-client/lib/interfaces"
 
 type CoverageResponse = {
   id: string
+  repository_id: string
   sha: string
   state: "failure" | "success"
   message: string

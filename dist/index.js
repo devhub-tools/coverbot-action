@@ -36749,7 +36749,7 @@ function run() {
                 }
                 octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: checkRun.id, conclusion: res.result.state }));
                 if (relevantForPatch && relevantForPatch > 0) {
-                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`, target_url: `https://${domain}/coverbot/coverage/${res.result.id}` }));
+                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`, target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}` }));
                 }
             }
         }

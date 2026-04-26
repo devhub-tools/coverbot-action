@@ -106,7 +106,7 @@ async function run(): Promise<void> {
           state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure",
           context: "coverbot (patch)",
           description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`,
-          target_url: `https://${domain}/coverbot/coverage/${res.result.id}`,
+          target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}`,
         })
       }
     }
