@@ -8,6 +8,8 @@ type CoverageResponse = {
   sha: string
   state: "failure" | "success"
   message: string
+  subdirectory_state?: "failure" | "success"
+  subdirectory_message?: string
 }
 
 export const postCoverage = async (

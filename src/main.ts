@@ -104,8 +104,19 @@ async function run(): Promise<void> {
           ...github.context.repo,
           sha: res.result.sha,
           state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure",
-          context: "coverbot (patch)",
+          context: subdirectory ? `coverbot (${subdirectory} patch)` : "coverbot (patch)",
           description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`,
+          target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}`,
+        })
+      }
+
+      if (subdirectory && res.result.subdirectory_state && res.result.subdirectory_message) {
+        octokit.rest.repos.createCommitStatus({
+          ...github.context.repo,
+          sha: res.result.sha,
+          state: res.result.subdirectory_state,
+          context: `coverbot (${subdirectory})`,
+          description: res.result.subdirectory_message,
           target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}`,
         })
       }
