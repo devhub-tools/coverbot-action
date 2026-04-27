@@ -99,5 +99,5 @@ Each job posts to the same `coverbot` status; whichever finishes second sees bot
 ## Add the coverage badge to your README.md
 
 ```markdown
-![coverbot](https://img.shields.io/endpoint?url=https://${DOMAIN}/coverbot/v1/${OWNER}/${REPO}/${BRANCH}/badge.json)
+![coverbot](https://img.shields.io/endpoint?url=https://${DOMAIN}/api/v1/coverbot/${OWNER}/${REPO}/${BRANCH}/badge.json)
 ```
