@@ -36690,7 +36690,7 @@ const post_coverage_1 = __nccwpck_require__(9092);
 const post_junit_reports_1 = __nccwpck_require__(2622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
+        var _a, _b, _c, _d;
         try {
             const token = core.getInput("github_token");
             const format = core.getInput("format");
@@ -36699,7 +36699,7 @@ function run() {
             const subdirectory = core.getInput("subdirectory") || "";
             const repoOwner = github.context.repo.owner;
             const repo = github.context.repo.repo;
-            const sha = github.context.sha;
+            const sha = (_b = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head.sha) !== null && _b !== void 0 ? _b : github.context.sha;
             const octokit = github.getOctokit(token);
             // changedFiles only currently supported for PRs
             const changedFiles = github.context.eventName === "pull_request" ? yield (0, changed_files_1.getChangedFiles)(octokit) : {};
@@ -36715,14 +36715,14 @@ function run() {
                 subdirectory: subdirectory || null,
                 owner: repoOwner,
                 repo,
-                default_branch: (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.default_branch,
+                default_branch: (_c = github.context.payload.repository) === null || _c === void 0 ? void 0 : _c.default_branch,
                 context: {
                     ref: github.context.ref,
                     sha,
                     payload: {
                         pull_request: {
                             head: {
-                                sha: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.head.sha,
+                                sha: (_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.head.sha,
                             },
                         },
                     },
@@ -36733,11 +36733,11 @@ function run() {
                 return core.setFailed("Failed to report coverage");
             if (core.getInput("junit_folder")) {
                 core.info("junit_folder input found: uploading JUnit files");
-                yield (0, post_junit_reports_1.postJUnitReports)(domain, repoOwner, repo, res.result.sha);
+                yield (0, post_junit_reports_1.postJUnitReports)(domain, repoOwner, repo, sha);
             }
-            octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.state, context: "coverbot", description: res.result.message }));
+            octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha, state: res.result.state, context: subdirectory ? `coverbot (${subdirectory})` : "coverbot", description: res.result.message }));
             if (annotations.length > 0 || (relevantForPatch && relevantForPatch > 0)) {
-                const { data: checkRun } = yield octokit.rest.checks.create(Object.assign(Object.assign({}, github.context.repo), { status: "in_progress", name: "coverbot", head_sha: res.result.sha }));
+                const { data: checkRun } = yield octokit.rest.checks.create(Object.assign(Object.assign({}, github.context.repo), { status: "in_progress", name: "coverbot", head_sha: sha }));
                 const chunkSize = 50;
                 const annotationChunks = Array.from(new Array(Math.ceil(annotations.length / chunkSize)), (_, i) => annotations.slice(i * chunkSize, i * chunkSize + chunkSize));
                 for (const chunk of annotationChunks) {
@@ -36749,10 +36749,7 @@ function run() {
                 }
                 octokit.rest.checks.update(Object.assign(Object.assign({}, github.context.repo), { check_run_id: checkRun.id, conclusion: res.result.state }));
                 if (relevantForPatch && relevantForPatch > 0) {
-                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: subdirectory ? `coverbot (${subdirectory} patch)` : "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`, target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}` }));
-                }
-                if (subdirectory && res.result.subdirectory_state && res.result.subdirectory_message) {
-                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha: res.result.sha, state: res.result.subdirectory_state, context: `coverbot (${subdirectory})`, description: res.result.subdirectory_message, target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}` }));
+                    octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, github.context.repo), { sha, state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure", context: subdirectory ? `coverbot (${subdirectory} patch)` : "coverbot (patch)", description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`, target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${sha}` }));
                 }
             }
         }

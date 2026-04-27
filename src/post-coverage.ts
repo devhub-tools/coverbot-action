@@ -3,13 +3,9 @@ import { HttpClient } from "@actions/http-client"
 import { TypedResponse } from "@actions/http-client/lib/interfaces"
 
 type CoverageResponse = {
-  id: string
   repository_id: string
-  sha: string
   state: "failure" | "success"
   message: string
-  subdirectory_state?: "failure" | "success"
-  subdirectory_message?: string
 }
 
 export const postCoverage = async (

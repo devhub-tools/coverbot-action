@@ -14,7 +14,7 @@ async function run(): Promise<void> {
     const subdirectory = core.getInput("subdirectory") || ""
     const repoOwner = github.context.repo.owner
     const repo = github.context.repo.repo
-    const sha = github.context.sha
+    const sha = github.context.payload.pull_request?.head.sha ?? github.context.sha
 
     const octokit = github.getOctokit(token)
 
@@ -56,14 +56,14 @@ async function run(): Promise<void> {
 
     if (core.getInput("junit_folder")) {
       core.info("junit_folder input found: uploading JUnit files")
-      await postJUnitReports(domain, repoOwner, repo, res.result.sha)
+      await postJUnitReports(domain, repoOwner, repo, sha)
     }
 
     octokit.rest.repos.createCommitStatus({
       ...github.context.repo,
-      sha: res.result.sha,
+      sha,
       state: res.result.state,
-      context: "coverbot",
+      context: subdirectory ? `coverbot (${subdirectory})` : "coverbot",
       description: res.result.message,
     })
 
@@ -72,7 +72,7 @@ async function run(): Promise<void> {
         ...github.context.repo,
         status: "in_progress",
         name: "coverbot",
-        head_sha: res.result.sha,
+        head_sha: sha,
       })
 
       const chunkSize = 50
@@ -102,22 +102,11 @@ async function run(): Promise<void> {
       if (relevantForPatch && relevantForPatch > 0) {
         octokit.rest.repos.createCommitStatus({
           ...github.context.repo,
-          sha: res.result.sha,
+          sha,
           state: Number(patchPercentage) >= Number(percentage) ? "success" : "failure",
           context: subdirectory ? `coverbot (${subdirectory} patch)` : "coverbot (patch)",
           description: `${coveredForPatch} lines covered out of ${relevantForPatch} (${patchPercentage}%)`,
-          target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}`,
-        })
-      }
-
-      if (subdirectory && res.result.subdirectory_state && res.result.subdirectory_message) {
-        octokit.rest.repos.createCommitStatus({
-          ...github.context.repo,
-          sha: res.result.sha,
-          state: res.result.subdirectory_state,
-          context: `coverbot (${subdirectory})`,
-          description: res.result.subdirectory_message,
-          target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${res.result.sha}`,
+          target_url: `https://${domain}/coverbot/coverage/${res.result.repository_id}/${sha}`,
         })
       }
     }
